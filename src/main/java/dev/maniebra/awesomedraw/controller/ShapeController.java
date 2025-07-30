@@ -1,11 +1,18 @@
 package dev.maniebra.awesomedraw.controller;
 
+import dev.maniebra.awesomedraw.dto.ShapeDto;
+import dev.maniebra.awesomedraw.dto.ShapeRequestDto;
+import dev.maniebra.awesomedraw.dto.caster.ShapeDtoCaster;
 import dev.maniebra.awesomedraw.model.Shape;
 import dev.maniebra.awesomedraw.service.ShapeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
+import static dev.maniebra.awesomedraw.dto.caster.ShapeDtoCaster.fromDto;
+import static dev.maniebra.awesomedraw.dto.caster.ShapeDtoCaster.toDto;
 
 @RestController
 @RequestMapping("/api/shapes")
@@ -18,22 +25,24 @@ public class ShapeController {
     }
 
     @GetMapping
-    public List<Shape> all(@RequestParam(required = false) Long paintingId) {
-        if (paintingId != null) {
-            return service.findByPainting(paintingId);
-        }
-        return service.findAll();
+    public List<ShapeDto> all(@RequestParam(required = false) Long paintingId) {
+        List<Shape> shapes = paintingId != null
+                ? service.findByPainting(paintingId)
+                : service.findAll();
+        return shapes.stream().map(ShapeDtoCaster::toDto).collect(Collectors.toList());
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Shape create(@RequestParam Long paintingId, @RequestBody Shape shape) {
-        return service.save(paintingId, shape);
+    public Shape create(@RequestBody ShapeRequestDto dto) {
+        return service.save(dto.getPaintingId(), fromDto(dto));
     }
 
     @PutMapping("/{id}")
-    public Shape update(@PathVariable Long id, @RequestBody Shape shape) {
-        return service.update(id, shape);
+    public ShapeDto update(@PathVariable Long id, @RequestBody ShapeRequestDto dto) {
+        Shape shape = fromDto(dto);
+        Shape updated = service.update(id, shape);
+        return toDto(updated);
     }
 
     @DeleteMapping("/{id}")
