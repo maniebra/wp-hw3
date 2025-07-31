@@ -1,4 +1,4 @@
-package dev.maniebra.awesomedraw.repositories;
+package dev.maniebra.awesomedraw.repository;
 
 import dev.maniebra.awesomedraw.model.Shape;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,7 +1,7 @@
 package dev.maniebra.awesomedraw.service;
 
 import dev.maniebra.awesomedraw.model.Painting;
-import dev.maniebra.awesomedraw.repositories.PaintingRepository;
+import dev.maniebra.awesomedraw.repository.PaintingRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
