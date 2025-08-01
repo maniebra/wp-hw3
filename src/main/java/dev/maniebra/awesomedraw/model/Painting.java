@@ -17,4 +17,8 @@ public class Painting {
 
     @OneToMany(mappedBy = "painting", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Shape> shapes = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 }

@@ -5,6 +5,8 @@ import dev.maniebra.awesomedraw.repository.UserRepository;
 import dev.maniebra.awesomedraw.utils.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import dev.maniebra.awesomedraw.model.User;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -40,5 +42,16 @@ public class AuthService implements UserDetailsService {
 
         return jwtUtils.generateToken(user.getUsername());
     }
+
+    public User getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication == null ? null : authentication.getName();
+        if (username == null) {
+            throw new UsernameNotFoundException("User not authenticated");
+        }
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
 
 }

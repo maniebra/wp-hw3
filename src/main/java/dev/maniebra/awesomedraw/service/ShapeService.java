@@ -13,10 +13,12 @@ public class ShapeService {
 
     private final ShapeRepository shapeRepository;
     private final PaintingRepository paintingRepository;
+    private final AuthService authService;
 
-    public ShapeService(ShapeRepository shapeRepository, PaintingRepository paintingRepository) {
+    public ShapeService(ShapeRepository shapeRepository, PaintingRepository paintingRepository, AuthService authService) {
         this.shapeRepository = shapeRepository;
         this.paintingRepository = paintingRepository;
+        this.authService = authService;
     }
 
     public List<Shape> findAll() {
@@ -24,22 +26,28 @@ public class ShapeService {
     }
 
     public List<Shape> findByPainting(Long paintingId) {
-        Painting painting = paintingRepository.findById(paintingId).orElseThrow();
-        return painting.getShapes();
+        String username = authService.getCurrentUser().getUsername();
+        return shapeRepository.findByPaintingIdAndPaintingUserUsername(paintingId, username);
     }
 
     public Shape save(Long paintingId, Shape shape) {
-        Painting painting = paintingRepository.findById(paintingId).orElseThrow();
+        String username = authService.getCurrentUser().getUsername();
+        Painting painting = paintingRepository.findByIdAndUserUsername(paintingId, username).orElseThrow();
         shape.setPainting(painting);
         return shapeRepository.save(shape);
     }
 
     public Shape update(Long id, Shape shape) {
+        String username = authService.getCurrentUser().getUsername();
+        Shape existing = shapeRepository.findByIdAndPaintingUserUsername(id, username).orElseThrow();
         shape.setId(id);
+        shape.setPainting(existing.getPainting());
         return shapeRepository.save(shape);
     }
 
     public void delete(Long id) {
-        shapeRepository.deleteById(id);
+        String username = authService.getCurrentUser().getUsername();
+        Shape shape = shapeRepository.findByIdAndPaintingUserUsername(id, username).orElseThrow();
+        shapeRepository.delete(shape);
     }
 }
