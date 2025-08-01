@@ -34,8 +34,8 @@ public class ShapeController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Shape create(@RequestBody ShapeRequestDto dto) {
-        return service.save(dto.getPaintingId(), fromDto(dto));
+    public ShapeDto create(@RequestBody ShapeRequestDto dto) {
+        return toDto(service.save(dto.getPaintingId(), fromDto(dto)));
     }
 
     @PutMapping("/{id}")

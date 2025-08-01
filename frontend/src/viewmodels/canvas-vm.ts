@@ -37,9 +37,9 @@ export const useCanvasVM = () => {
   const saveCurrent = useCallback(async () => {
     await saveProject({ name: drawingName || 'Untitled', shapes });
   }, [drawingName, shapes]);
-  
-  const loadFromStorage = useCallback(async () => {
-    const { name, shapes: stored } = await loadProject();
+
+ const loadFromStorage = useCallback(async (id?: number) => {
+    const { name, shapes: stored } = await loadProject(id);
     setDrawingName(name);
     setShapes(stored);
   }, []);

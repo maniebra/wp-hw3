@@ -5,6 +5,7 @@ import {
   deletePainting,
   listShapes,
   createShape,
+  type PaintingDto,
 } from './api';
 
 const toApiType = (t: ShapeType): 'CIRCLE' | 'SQUARE' | 'TRIANGLE' =>
@@ -16,10 +17,12 @@ interface ProjectJSON {
   shapes: Shape[];
 }
 
-export const loadProject = async (): Promise<ProjectJSON> => {
+export const loadProject = async (id?: number): Promise<ProjectJSON> => {
   const paintings = await listPaintings();
   if (paintings.length === 0) return { name: 'Untitled', shapes: [] };
-  const painting = paintings[0];
+  const painting = id
+    ? paintings.find((p) => p.id === id) ?? paintings[0]
+    : paintings[0];
   const shapesDto = await listShapes(painting.id);
   const shapes: Shape[] = shapesDto.map((s) => ({
     id: String(s.id),
@@ -32,8 +35,6 @@ export const loadProject = async (): Promise<ProjectJSON> => {
 };
 
 export const saveProject = async (proj: ProjectJSON): Promise<void> => {
-  const paintings = await listPaintings();
-  for (const p of paintings) await deletePainting(p.id);
   const painting = await createPainting({ name: proj.name });
   for (const s of proj.shapes) {
     await createShape({
@@ -45,3 +46,8 @@ export const saveProject = async (proj: ProjectJSON): Promise<void> => {
     });
   }
 };
+
+export const listProjects = async (): Promise<PaintingDto[]> => listPaintings();
+
+export const removeProject = async (id: number): Promise<void> =>
+  deletePainting(id);
