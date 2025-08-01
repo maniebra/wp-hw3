@@ -85,27 +85,49 @@ export default function Toolbar({ tool, setTool, onSave, onLoad }: Props) {
             {open && (
         <div
           style={{
-            position: 'absolute',
-            left: '110%',
-            background: '#333',
-            padding: '0.5rem',
-            border: '1px solid #555',
-            borderRadius: '0.5rem',
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.6)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
           }}
         >
-          {paintings.map((p) => (
-            <div
-              key={p.id}
-              style={{ display: 'flex', justifyContent: 'space-between', gap: '0.5rem', marginBottom: '0.25rem' }}
-            >
-              <span>{p.name}</span>
-              <div style={{ display: 'flex', gap: '0.25rem' }}>
-                <button onClick={() => load(p.id)}>Load</button>
-                <button onClick={() => del(p.id)}>Del</button>
+          <div
+            style={{
+              background: '#333',
+              padding: '1rem',
+              border: '1px solid #555',
+              borderRadius: '0.5rem',
+              minWidth: '250px',
+            }}
+          >
+            <h3 style={{ textAlign: 'center', margin: '0 0 0.5rem 0' }}>Load Painting</h3>
+            {paintings.map((p) => (
+              <div
+                key={p.id}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  gap: '0.5rem',
+                  marginBottom: '0.25rem',
+                }}
+              >
+                <span>{p.name}</span>
+                <div style={{ display: 'flex', gap: '0.25rem' }}>
+                  <button onClick={() => load(p.id)}>Load</button>
+                  <button onClick={() => del(p.id)}>Del</button>
+                </div>
               </div>
-            </div>
-          ))}
-          <button onClick={() => setOpen(false)}>Close</button>
+            ))}
+            <button
+              style={{ marginTop: '0.5rem', width: '100%' }}
+              onClick={() => setOpen(false)}
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
     </aside>
