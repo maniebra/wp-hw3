@@ -1,4 +1,4 @@
-package dev.maniebra.awesomedraw.configs;
+package dev.maniebra.awesomedraw.config;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
